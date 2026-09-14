@@ -1,0 +1,1534 @@
+<meta charset="utf-8">
+<title>ปีหนึ่งปี</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FEFAF1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&family=Inter:wght@400;500;600&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* Brand values copied from core/brand/tokens.css. Never edited here. */
+:root {
+  --bsd-yellow: #FFCD00; --bsd-orange: #FCAC17; --bsd-coral: #FA595D;
+  --bsd-teal: #00C4BA;   --bsd-green: #75CF20;  --bsd-text: #51545F;
+  --bsd-bg: #FFFFFF;     --bsd-yellow-pale: #FEFAF1;
+  --head: "Quicksand", "Kanit", system-ui, sans-serif;
+  --body: "Inter", "Kanit", system-ui, sans-serif;
+  --thai: "Kanit", "Noto Sans Thai", system-ui, sans-serif;
+  --r-sm: 8px; --r-md: 14px; --r-lg: 22px; --r-pill: 999px;
+  --e1: 0 1px 2px rgba(81, 84, 95, .26);
+  --e2: 0 4px 10px rgba(81, 84, 95, .24), 0 1px 2px rgba(81, 84, 95, .2);
+  --e3: 0 18px 40px rgba(81, 84, 95, .34), 0 4px 10px rgba(81, 84, 95, .22);
+  --ease-pop: cubic-bezier(.34, 1.4, .64, 1);
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bsd-yellow-pale);
+  color: var(--bsd-text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+button { font: inherit; color: inherit; }
+img { display: block; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.t-payday { --tint: var(--bsd-yellow); }
+.t-want   { --tint: var(--bsd-coral); }
+.t-shock  { --tint: var(--bsd-text); }
+.t-chance { --tint: var(--bsd-green); }
+.t-friend { --tint: var(--bsd-teal); }
+.t-grow   { --tint: var(--bsd-orange); }
+[class*="t-"] { --bev: color-mix(in srgb, var(--tint) 60%, var(--bsd-text)); }
+
+.app {
+  position: relative;
+  height: 100dvh;
+  max-width: 430px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.stage { position: relative; flex: 1; min-height: 0; }
+
+/* ---------- glass ---------- */
+.glass {
+  background: rgba(255, 255, 255, .6);
+  -webkit-backdrop-filter: blur(20px) saturate(185%);
+  backdrop-filter: blur(20px) saturate(185%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .92), inset 0 -1px 0 rgba(255, 255, 255, .3), var(--e2);
+}
+/* The bending layer sits UNDER the glass's own text, or the label prints twice. */
+@supports (backdrop-filter: url(#rim)) {
+  .glass { isolation: isolate; }
+  .glass::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+    backdrop-filter: url(#rim); pointer-events: none;
+  }
+}
+
+/* ---------- pawn and die ---------- */
+.pawn {
+  position: absolute; left: 0; top: 0; width: 34px; height: 34px; z-index: 6;
+  transition: transform .2s var(--ease-pop);
+  pointer-events: none;
+}
+.pawn.back { transition: transform .36s var(--ease-out); }
+.pawn .face {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: var(--bsd-bg);
+  box-shadow: inset 0 0 0 4px var(--ring), 0 3px 0 rgba(81, 84, 95, .4), var(--e2);
+  display: flex; align-items: center; justify-content: center;
+  font: 700 15px/1 var(--thai);
+  transition: box-shadow .3s var(--ease-out);
+}
+.pawn.hop .face { animation: hop .2s ease-out; }
+@keyframes hop {
+  0%   { transform: translateY(0) scale(1, 1); }
+  35%  { transform: translateY(-14px) scale(.92, 1.08); }
+  75%  { transform: translateY(0) scale(1.1, .9); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+.p0 { --ring: var(--bsd-yellow); }
+.p1 { --ring: var(--bsd-teal); }
+/* the one waiting: a quieter ring, never a see-through pawn */
+.pawn.dim .face { box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--ring) 40%, var(--bsd-bg)), 0 2px 0 rgba(81, 84, 95, .2), var(--e1); }
+
+.die {
+  width: 54px; height: 54px; padding: 8px; gap: 3px;
+  border-radius: var(--r-md);
+  background: var(--bsd-bg);
+  box-shadow: 0 5px 0 rgba(81, 84, 95, .28), var(--e2);
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+}
+.die b { width: 9px; height: 9px; border-radius: 50%; background: var(--bsd-text); place-self: center; }
+.die.idle b { background: rgba(81, 84, 95, .15); }
+.die .p1 { grid-area: 1 / 1; } .die .p2 { grid-area: 1 / 3; } .die .p3 { grid-area: 2 / 1; }
+.die .p4 { grid-area: 2 / 2; } .die .p5 { grid-area: 2 / 3; } .die .p6 { grid-area: 3 / 1; }
+.die .p7 { grid-area: 3 / 3; }
+.die.roll { animation: tumble .6s linear; }
+.die.landed { animation: landpop .32s var(--ease-pop); }
+@keyframes tumble {
+  0% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(-22px) rotate(160deg); }
+  50% { transform: translateY(0) rotate(320deg); }
+  70% { transform: translateY(-9px) rotate(420deg); }
+  100% { transform: translateY(0) rotate(720deg); }
+}
+@keyframes landpop { 0% { transform: scale(.8); } 60% { transform: scale(1.14); } 100% { transform: scale(1); } }
+
+/* ================= the road ================= */
+.scroll {
+  position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(81, 84, 95, .13) 1px, transparent 1.5px) 0 0 / 18px 18px,
+    var(--bsd-yellow-pale);
+}
+.scroll::-webkit-scrollbar { display: none; }
+.path { position: relative; }
+.road { position: absolute; left: 0; top: 0; pointer-events: none; }
+
+/* a season is a quiet wash across the whole road, changing only at a month line */
+.season { position: absolute; left: 0; right: 0; pointer-events: none; }
+.season.rain { background: rgba(0, 196, 186, .07); }
+.season.cool { background: rgba(255, 255, 255, .62); }
+.season.hot  { background: rgba(252, 172, 23, .09); }
+.slabel { position: absolute; left: 14px; z-index: 1; transform: translateY(-50%); font: 500 15px/1.3 var(--thai); white-space: nowrap; }
+
+.node {
+  position: absolute; width: 68px; height: 68px; margin: -34px 0 0 -34px;
+  border-radius: 50%;
+  background: var(--bsd-bg);
+  box-shadow: inset 0 0 0 5px var(--tint), 0 6px 0 var(--bev), var(--e2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  transition: box-shadow .3s var(--ease-out);
+}
+.node img { width: 34px; height: 34px; object-fit: contain; transition: opacity .3s ease; }
+/* A month that is over: the tiles nobody stood on go quiet, still solid. The ones somebody lived stay. */
+.node.idle-past { box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--tint) 30%, var(--bsd-bg)), 0 6px 0 rgba(81, 84, 95, .16), var(--e1); }
+.node.idle-past img { filter: grayscale(1); opacity: .4; }
+.node.hit { animation: dip .26s ease-out; }
+@keyframes dip { 40% { transform: scale(.9); } 80% { transform: scale(1.05); } }
+.node.land { animation: pulse .9s ease-out 2; }
+@keyframes pulse {
+  0%   { box-shadow: inset 0 0 0 5px var(--tint), 0 6px 0 var(--bev), 0 0 0 0 var(--tint), var(--e2); }
+  100% { box-shadow: inset 0 0 0 5px var(--tint), 0 6px 0 var(--bev), 0 0 0 18px transparent, var(--e2); }
+}
+
+.tag, .stamp {
+  position: absolute; z-index: 3;
+  border-radius: var(--r-pill);
+  background: var(--bsd-bg);
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+.tag { padding: 3px 12px; box-shadow: var(--e1); font-size: 15px; font-weight: 500; }
+.tag.left, .stamp.left { transform: translate(-100%, -50%); }
+
+/* what somebody did on this tile: who, and whether the money went out or stayed */
+.stamp {
+  display: flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px 0 3px;
+  box-shadow: inset 0 0 0 2px var(--mk), var(--e1);
+  font: 600 15px/1 var(--thai);
+}
+/* a month the game played for them: dashed, so it never reads as their own choice */
+.stamp.auto { box-shadow: var(--e1); outline: 2px dashed var(--mk); outline-offset: -2px; }
+.spend { --mk: var(--bsd-coral); }
+.keep  { --mk: var(--bsd-green); }
+.mini {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--bsd-bg); box-shadow: inset 0 0 0 3px var(--ring);
+  display: flex; align-items: center; justify-content: center;
+  font: 600 15px/1 var(--thai); color: var(--bsd-text);
+}
+.stamp.later { visibility: hidden; }
+.pop { animation: popin .42s var(--ease-pop); }
+@keyframes popin { 0% { scale: .3; opacity: 0; } 70% { scale: 1.08; opacity: 1; } 100% { scale: 1; } }
+
+/* a month gate: one line across the whole road, everybody crosses it at once */
+.gline {
+  position: absolute; left: 0; right: 0; height: 2px; margin-top: -1px; z-index: 1;
+  background: repeating-linear-gradient(90deg, rgba(81, 84, 95, .26) 0 8px, transparent 8px 16px);
+}
+.gline.now { height: 3px; margin-top: -1.5px; background: repeating-linear-gradient(90deg, rgba(252, 172, 23, .85) 0 10px, transparent 10px 18px); }
+.gate {
+  position: absolute; z-index: 2;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 8px;
+  min-height: 52px; padding: 5px 16px 5px 8px;
+  border-radius: var(--r-pill);
+  background: var(--bsd-bg);
+  box-shadow: 0 4px 0 rgba(81, 84, 95, .26), var(--e1);
+  white-space: nowrap;
+}
+.gate img { width: 26px; height: 26px; object-fit: contain; }
+.gate .gtx { display: flex; flex-direction: column; }
+.gate b { font: 600 17px/1.2 var(--thai); }
+.gate .gsub { font: 400 15px/1.25 var(--thai); }
+.gate.past { box-shadow: 0 3px 0 rgba(81, 84, 95, .14), var(--e1); }
+.gate.past img { filter: grayscale(1); opacity: .5; }
+.gate.now { box-shadow: inset 0 0 0 3px var(--bsd-yellow), 0 4px 0 color-mix(in srgb, var(--bsd-yellow) 55%, var(--bsd-text)), var(--e2); }
+.gate.fin { min-height: 48px; padding: 0 20px 0 10px; }
+.gate.fin b { font-size: 19px; }
+.gate.fin img { width: 36px; height: 36px; }
+.gate.start { min-height: 40px; padding: 0 16px; font: 500 17px/1 var(--thai); }
+
+/* the same pocket money, landing on every pawn on the same beat */
+.chipin {
+  position: absolute; z-index: 7; pointer-events: none;
+  transform: translateX(-50%);
+  padding: 2px 12px; border-radius: var(--r-pill);
+  background: var(--bsd-bg); box-shadow: inset 0 0 0 2px var(--bsd-green), var(--e2);
+  font: 700 16px/1.4 var(--head); white-space: nowrap;
+  animation: chipup 1.5s var(--ease-out) forwards;
+}
+@keyframes chipup {
+  0% { opacity: 0; translate: 0 8px; }
+  15% { opacity: 1; translate: 0 0; }
+  75% { opacity: 1; translate: 0 -8px; }
+  100% { opacity: 0; translate: 0 -16px; }
+}
+
+/* ---------- the destination: each person's own goal, same distance for both ---------- */
+.goal {
+  position: absolute; z-index: 2;
+  width: 168px; margin-left: -84px;
+  padding: 22px 12px 12px;
+  border-radius: var(--r-lg);
+  background: var(--bsd-bg);
+  box-shadow: inset 0 0 0 4px var(--ring), 0 6px 0 color-mix(in srgb, var(--ring) 55%, var(--bsd-text)), var(--e2);
+  text-align: center;
+}
+.goal.g0 { --ring: var(--bsd-yellow); }
+.goal.g1 { --ring: var(--bsd-teal); }
+.goal .gi { width: 36px; height: 36px; margin: 0 auto 2px; }
+.goal .gn { font: 400 15px/1.4 var(--thai); }
+.goal .gt { font: 600 17px/1.3 var(--thai); min-height: 2.6em; display: flex; align-items: center; justify-content: center; }
+.goal .ga { font: 500 15px/1.4 var(--thai); }
+/* the result half of the card only exists once the year is over: no empty card on the way */
+.goal .gres { margin-top: 8px; padding-top: 8px; border-top: 2px dashed rgba(81, 84, 95, .2); display: none; visibility: hidden; }
+.goal.ready .gres { display: block; }
+.goal.done .gres { visibility: visible; }
+.goal .gk { font: 400 15px/1.4 var(--thai); }
+.goal .gtot { font: 700 40px/1.1 var(--head); font-variant-numeric: tabular-nums; }
+.gbar { height: 8px; margin: 8px 4px 0; border-radius: var(--r-pill); background: rgba(81, 84, 95, .14); overflow: hidden; }
+.gbar i { display: block; height: 100%; width: 0; border-radius: var(--r-pill); background: var(--bsd-green); transition: width 1.2s var(--ease-out); }
+.verdict {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px; padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font: 600 15px/1.3 var(--thai);
+  box-shadow: inset 0 0 0 2px var(--mk);
+}
+.verdict.keep  { background: color-mix(in srgb, var(--bsd-green) 16%, var(--bsd-bg)); }
+.verdict.spend { background: color-mix(in srgb, var(--bsd-coral) 10%, var(--bsd-bg)); }
+.goal.done .verdict { animation: popin .42s var(--ease-pop) 1.2s both; }
+.grefl { margin-top: 8px; font: 400 15px/1.4 var(--thai); }
+.grefl b { font-weight: 600; white-space: nowrap; }
+.nw { white-space: nowrap; }
+.gjump {
+  margin: 8px auto 0; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 14px 0 8px;
+  border: 0; border-radius: var(--r-pill);
+  background: var(--bsd-bg);
+  box-shadow: inset 0 0 0 2px rgba(81, 84, 95, .3), 0 3px 0 rgba(81, 84, 95, .3);
+  font: 600 15px/1 var(--thai); cursor: pointer;
+}
+.gjump img { width: 22px; height: 22px; }
+.gjump:active { transform: translateY(3px); box-shadow: inset 0 0 0 2px rgba(81, 84, 95, .3); }
+.gjump:focus-visible { outline: 3px solid var(--bsd-text); outline-offset: 2px; }
+
+/* the one line that leads at the end: Ice's winner rule, across both roads */
+.winner {
+  position: absolute; z-index: 3;
+  transform: translate(-50%, -50%);
+  padding: 10px 22px 12px;
+  border-radius: var(--r-lg);
+  background: var(--bsd-bg);
+  box-shadow: inset 0 0 0 3px var(--bsd-yellow), 0 5px 0 color-mix(in srgb, var(--bsd-yellow) 55%, var(--bsd-text)), var(--e2);
+  text-align: center; white-space: nowrap;
+  visibility: hidden;
+}
+.winner.on { visibility: visible; animation: popin .42s var(--ease-pop) .9s both; }
+.winner .wk { display: flex; align-items: center; justify-content: center; gap: 8px; font: 600 17px/1.3 var(--thai); }
+.winner .wk img { width: 28px; height: 28px; }
+.winner .wn { display: flex; align-items: center; justify-content: center; gap: 10px; font: 700 32px/1.15 var(--head); font-variant-numeric: tabular-nums; }
+.winner .wn .mini { width: 34px; height: 34px; font-size: 17px; }
+.winner .wauto { font: 400 15px/1.3 var(--thai); margin-top: 2px; }
+
+/* ---------- glass over the road ---------- */
+.pill {
+  position: absolute; top: 10px; left: 14px; right: 96px; z-index: 8;
+  border-radius: var(--r-lg); padding: 9px 14px 8px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.pill .who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pill .avatar { position: static; width: 34px; height: 34px; transform: none !important; }
+.pill .avatar + .avatar { margin-left: -14px; }
+.pill b { font: 700 19px/1.2 var(--thai); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pill .m { font: 400 15px/1.3 var(--body); margin-left: auto; white-space: nowrap; }
+.rail { display: flex; align-items: center; gap: 3px; height: 26px; }
+.rail i { flex: 1; height: 8px; border-radius: var(--r-pill); background: rgba(81, 84, 95, .28); transition: background .3s ease; }
+.rail i.past { background: var(--bsd-text); }
+.rail i.now { height: 14px; background: var(--bsd-yellow); box-shadow: inset 0 0 0 2px rgba(81, 84, 95, .35); }
+.rail img { width: 26px; height: 26px; margin-left: 3px; }
+.diebox {
+  position: absolute; top: 10px; right: 14px; z-index: 8;
+  width: 74px; height: 74px; border: 0; padding: 0; border-radius: var(--r-lg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.diebox[aria-busy="true"] { cursor: progress; }
+.diebox:focus-visible { outline: 3px solid var(--bsd-text); outline-offset: 2px; }
+.quiet {
+  position: absolute; top: 96px; right: 14px; z-index: 8;
+  min-height: 44px; padding: 0 14px;
+  border: 0; border-radius: var(--r-pill);
+  font: 500 15px/1 var(--thai);
+  cursor: pointer;
+}
+.quiet:focus-visible { outline: 3px solid var(--bsd-text); outline-offset: 2px; }
+
+/* ---------- dock ---------- */
+.dock { position: relative; z-index: 9; padding: 0 14px calc(12px + env(safe-area-inset-bottom)); }
+.purse {
+  position: relative;
+  margin: -34px 6px 10px;
+  padding: 8px 16px 8px;
+  border-radius: var(--r-md);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.goalrow { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 1.4; }
+.goalrow img { width: 24px; height: 24px; flex: none; }
+.goalrow .gl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.goalrow .ga { font: 700 16px/1 var(--head); white-space: nowrap; }
+.pbar { height: 6px; margin: 5px 0 6px; border-radius: var(--r-pill); background: rgba(81, 84, 95, .14); overflow: hidden; }
+.pbar i { display: block; height: 100%; width: 0; border-radius: var(--r-pill); background: var(--bsd-green); transition: width .6s var(--ease-out); }
+.money { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.purse .k { font: 400 15px/1.3 var(--thai); }
+.purse .v { font: 700 25px/1.1 var(--head); font-variant-numeric: tabular-nums; }
+.purse .right { text-align: right; }
+.purse .right .v { font-size: 19px; }
+/* the friend holding nothing still sees their own money */
+.other { display: flex; align-items: center; gap: 6px; margin-top: 5px; font: 400 15px/1.2 var(--thai); }
+.other .mini { width: 24px; height: 24px; }
+.other .on { font-weight: 600; }
+.other .ok { margin-left: auto; }
+.other b { font: 700 16px/1 var(--head); font-variant-numeric: tabular-nums; }
+.duo { display: flex; gap: 16px; }
+.duo .dp { flex: 1; min-width: 0; }
+.duo .dn { display: flex; align-items: center; gap: 6px; font: 600 15px/1.2 var(--thai); }
+.duo .mini { width: 24px; height: 24px; }
+.purse .duo .v { margin-left: auto; font-size: 22px; }
+.duo .dk { margin-top: 3px; font: 400 15px/1.3 var(--thai); white-space: pre-line; }
+.duo .pbar { margin: 5px 0 0; }
+.delta {
+  position: absolute; left: 16px; top: -12px;
+  padding: 2px 10px; border-radius: var(--r-pill);
+  font: 700 17px/1.4 var(--head);
+  opacity: 0; pointer-events: none;
+}
+.delta.go { animation: floatup 1.1s var(--ease-out); }
+.delta.minus { background: var(--bsd-coral); color: var(--bsd-bg); }
+.delta.plus { background: var(--bsd-green); color: var(--bsd-text); }
+@keyframes floatup {
+  0% { opacity: 0; transform: translateY(8px); }
+  18% { opacity: 1; transform: translateY(-6px); }
+  70% { opacity: 1; transform: translateY(-18px); }
+  100% { opacity: 0; transform: translateY(-26px); }
+}
+
+.keys { display: flex; gap: 10px; }
+.key {
+  flex: 1; min-width: 0; min-height: 52px; border: 0; border-radius: var(--r-md);
+  background: var(--fill); color: var(--on);
+  box-shadow: 0 5px 0 var(--bevel);
+  font: 700 19px/1 var(--thai);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer;
+  transition: transform .07s ease, box-shadow .07s ease;
+}
+.key:active { transform: translateY(5px); box-shadow: 0 0 0 var(--bevel); }
+.key:focus-visible { outline: 3px solid var(--bsd-text); outline-offset: 3px; }
+.key img { width: 28px; height: 28px; }
+.key .mini { width: 32px; height: 32px; }
+.key.go { --fill: var(--bsd-green); --bevel: color-mix(in srgb, var(--bsd-green) 60%, var(--bsd-text)); --on: var(--bsd-text); }
+/* in progress is not disabled: full strength, a label that says what is happening */
+.key.go[aria-busy="true"] { cursor: progress; }
+.key.soft, .key.pick {
+  --fill: var(--bsd-bg); --bevel: rgba(81, 84, 95, .45); --on: var(--bsd-text);
+  box-shadow: inset 0 0 0 2px rgba(81, 84, 95, .22), 0 5px 0 var(--bevel);
+}
+.key.soft:active, .key.pick:active { box-shadow: inset 0 0 0 2px rgba(81, 84, 95, .22), 0 0 0 var(--bevel); }
+.key.pick {
+  width: 100%; min-height: 64px; padding: 0 16px; justify-content: space-between; gap: 12px;
+  font-size: 17px; text-align: left; line-height: 1.3;
+}
+.key.pick small {
+  flex: none; padding: 4px 10px; border-radius: var(--r-pill);
+  background: var(--bsd-bg); box-shadow: inset 0 0 0 2px var(--mk);
+  font: 600 15px/1.2 var(--head); white-space: nowrap;
+}
+
+/* ---------- sheets ---------- */
+.scrim {
+  position: fixed; inset: 0; z-index: 20; background: rgba(81, 84, 95, .42);
+  opacity: 0; pointer-events: none; transition: opacity .35s ease;
+}
+.scrim.on { opacity: 1; pointer-events: auto; }
+.sheet {
+  position: fixed; left: 50%; bottom: 0; z-index: 21;
+  width: min(430px, 100%);
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: rgba(255, 255, 255, .8);
+  transform: translate(-50%, 105%);
+  visibility: hidden;
+  transition: transform .45s var(--ease-out), visibility 0s linear .45s;
+}
+.sheet.up { transform: translate(-50%, 0); visibility: visible; transition: transform .45s var(--ease-out), visibility 0s; }
+.sheet .whose { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font: 700 17px/1.3 var(--thai); }
+.sheet .whose .mini { width: 30px; height: 30px; }
+.sheet .head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.sheet .chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px 4px 6px; border-radius: var(--r-pill);
+  background: var(--bsd-bg); box-shadow: inset 0 0 0 2px var(--tint);
+  font-size: 15px; font-weight: 600;
+}
+.sheet .chip img { width: 24px; height: 24px; }
+.sheet .when { font: 400 15px/1.3 var(--thai); }
+.sheet .owl { width: 64px; height: 64px; object-fit: contain; margin-left: auto; margin-top: -44px; }
+.sheet h2 { margin: 0; font: 700 25px/1.25 var(--thai); }
+.sheet .text { margin: 2px 0 14px; font-size: 17px; }
+.sheet .picks { display: flex; flex-direction: column; gap: 12px; }
+
+/* the year, looked back on: two roads side by side, the same twelve lines across both */
+.year { max-height: calc(100dvh - 20px); display: flex; flex-direction: column; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+.year .head { margin-bottom: 4px; }
+.year h2 { font-size: 25px; }
+.close {
+  min-height: 44px; min-width: 64px; padding: 0 16px; margin-left: auto;
+  border: 0; border-radius: var(--r-pill);
+  background: var(--bsd-bg); box-shadow: var(--e1);
+  font: 600 15px/1 var(--thai); cursor: pointer;
+}
+.close:focus-visible { outline: 3px solid var(--bsd-text); outline-offset: 2px; }
+.yhint { margin: 0 0 8px; font: 400 15px/1.4 var(--thai); }
+.yscroll { overflow-y: auto; min-height: 0; margin: 0 -4px; padding: 0 4px; }
+.yrow {
+  display: grid; grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+  align-items: stretch; min-height: 44px;
+  border-top: 2px dashed rgba(81, 84, 95, .16);
+}
+.yrow.h { border-top: 0; min-height: 0; padding-bottom: 8px; }
+.ycell { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
+button.ycell {
+  width: 100%; min-height: 56px; padding: 6px 4px 6px 0;
+  border: 0; background: none; text-align: left; cursor: pointer;
+}
+button.ycell:focus-visible { outline: 3px solid var(--bsd-text); outline-offset: -3px; border-radius: var(--r-sm); }
+.yrow.mo .ycell::before, .yrow.end .ycell::before {
+  content: ""; position: absolute; left: 13px; width: 6px; top: 0; bottom: 0;
+  background: rgba(0, 196, 186, .28);
+}
+.yrow.first .ycell::before { top: 50%; }
+.yrow.end .ycell::before { bottom: 50%; }
+.ymid { display: flex; align-items: center; justify-content: center; font: 700 15px/1 var(--head); }
+.bead {
+  position: relative; z-index: 1; flex: none;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bsd-bg);
+  box-shadow: inset 0 0 0 3px var(--tint), 0 2px 0 var(--bev);
+  display: flex; align-items: center; justify-content: center;
+}
+.bead img { width: 18px; height: 18px; object-fit: contain; }
+.bead.goalbead { --tint: var(--ring); --bev: color-mix(in srgb, var(--ring) 55%, var(--bsd-text)); }
+.ytx { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; }
+.yt { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 15px/1.3 var(--thai); }
+.ys {
+  max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  padding: 3px 10px; border-radius: var(--r-pill);
+  background: var(--bsd-bg); box-shadow: inset 0 0 0 2px var(--mk);
+  font: 600 15px/1.3 var(--thai); white-space: nowrap;
+}
+.ys.auto { box-shadow: none; outline: 2px dashed var(--mk); outline-offset: -2px; }
+.yin { font: 400 15px/1.3 var(--thai); }
+.ywho { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ywho .nm { display: flex; align-items: center; gap: 8px; font: 700 17px/1.2 var(--thai); }
+.ywho .gt { font: 400 15px/1.3 var(--thai); }
+.ywho .mini { width: 30px; height: 30px; }
+.yend { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 0; min-width: 0; }
+.yend .tot { display: flex; align-items: center; gap: 6px; font: 700 19px/1.2 var(--head); }
+.yend .tot img { width: 22px; height: 22px; }
+.yend .verdict { margin-top: 0; padding: 3px 10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-delay: 0s !important;
+    animation-iteration-count: 1 !important; transition-duration: .001ms !important;
+  }
+  /* fewer moves, never less feedback: money that moved stays readable */
+  .chipin, .delta.go { animation: none !important; opacity: 1; }
+}
+</style>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <filter id="rim" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="2" seed="4" result="warp"/>
+    <feGaussianBlur in="warp" stdDeviation="3" result="soft"/>
+    <feDisplacementMap in="SourceGraphic" in2="soft" scale="24" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="app">
+  <div class="stage" id="stage">
+    <div class="scroll" id="scroll"><div class="path" id="path"></div></div>
+    <div class="pill glass" id="pill">
+      <div class="who">
+        <div class="pawn avatar p0" id="av0"><div class="face"></div></div>
+        <div class="pawn avatar p1" id="av1" hidden><div class="face"></div></div>
+        <b id="pillName"></b><span class="m" id="pillMonth"></span>
+      </div>
+      <div class="rail" id="rail" aria-hidden="true"></div>
+    </div>
+    <button class="diebox glass" id="dieBtn" type="button" aria-label="ทอยลูกเต๋า"><span class="die idle" id="die" aria-hidden="true"></span></button>
+    <button class="quiet glass" id="skip" type="button">ข้ามไปสิ้นปี</button>
+    <button class="quiet glass" id="back" type="button" hidden>กลับไปดูผล</button>
+  </div>
+
+  <div class="dock">
+    <div class="purse glass" id="purse">
+      <div class="duo" id="duo" hidden>
+        <div class="dp"><div class="dn"><span class="mini p0">มี</span><span>มีนา</span><b class="v" id="duo0"></b></div><div class="dk" id="duoK0"></div><div class="pbar"><i id="duoBar0"></i></div></div>
+        <div class="dp"><div class="dn"><span class="mini p1">ว</span><span>วิน</span><b class="v" id="duo1"></b></div><div class="dk" id="duoK1"></div><div class="pbar"><i id="duoBar1"></i></div></div>
+      </div>
+      <div class="solo" id="solo">
+        <div class="goalrow"><img src="icons/target.png" alt=""><span class="gl" id="purseGoal"></span><span class="ga" id="purseGoalAmt"></span></div>
+        <div class="pbar"><i id="purseBar"></i></div>
+        <div class="money">
+          <div><div class="k" id="purseK"></div><div class="v" id="cash"></div></div>
+          <div class="right"><div class="k">เงินเก็บ</div><div class="v" id="save"></div></div>
+        </div>
+        <div class="other" id="other"><span class="mini" id="otherMark"></span><span class="on" id="otherName"></span><span class="ok">เงินรวม</span><b id="otherV"></b></div>
+      </div>
+      <div class="delta" id="delta"></div>
+    </div>
+    <div class="keys">
+      <button class="key go" id="roll" type="button" data-next-action><span class="mini" id="rollMark" hidden></span><img id="rollIcon" src="icons/calendar.png" alt="" hidden><span id="rollLabel">ทอยลูกเต๋า</span></button>
+      <button class="key soft" id="again" type="button" hidden>เล่นอีกปี</button>
+    </div>
+  </div>
+  <p class="sr" id="say" aria-live="polite"></p>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet glass" id="sheet" role="dialog" aria-modal="true" aria-labelledby="cardTitle" aria-hidden="true">
+  <div class="whose"><span class="mini" id="cardMark"></span><span id="cardWho"></span><img class="owl" src="assets/owl-reading.png" alt=""></div>
+  <div class="head"><span class="chip" id="chip"></span><span class="when" id="cardWhen"></span></div>
+  <h2 id="cardTitle"></h2>
+  <p class="text" id="cardText"></p>
+  <div class="picks" id="picks"></div>
+</section>
+
+<section class="sheet glass year" id="year" role="dialog" aria-modal="true" aria-labelledby="yearTitle" aria-hidden="true">
+  <div class="head"><h2 id="yearTitle">ย้อนดูทั้งปี</h2><button class="close" id="yearClose" type="button">ปิด</button></div>
+  <p class="yhint">แตะเดือนไหนก็ได้ เพื่อไปดูบนทาง</p>
+  <div class="yscroll" id="ygrid"></div>
+</section>
+
+<script>
+/* ---------- content: the six kinds of month, real cards from content.js ---------- */
+const TYPES = ['payday', 'want', 'shock', 'chance', 'friend', 'grow'];
+const TYPE = {
+  payday: { short: 'เงินเข้า',  label: 'วันรับเงินพิเศษ', spent: 'เงินพิเศษ',      icon: 'coin.png' },
+  want:   { short: 'อยากได้',   label: 'อยากได้',        spent: 'ของที่อยากได้',   icon: 'cart.png' },
+  shock:  { short: 'ไม่คาดคิด', label: 'เรื่องไม่คาดคิด', spent: 'เรื่องไม่คาดคิด', icon: 'collision.png' },
+  chance: { short: 'โอกาส',    label: 'โอกาส',          spent: 'โอกาส',          icon: 'question.png' },
+  friend: { short: 'เพื่อน',     label: 'เพื่อน',          spent: 'เพื่อน',           icon: 'people.png' },
+  grow:   { short: 'พัฒนา',    label: 'พัฒนาตัวเอง',    spent: 'การพัฒนาตัวเอง',  icon: 'rocket.png' },
+};
+const DECK = {
+  want: [
+    { title: 'รองเท้าผ้าใบรุ่นใหม่', text: 'เพื่อนใส่กันทั้งห้อง ราคา ฿2,500', choices: [{ label: 'ซื้อเลย', cash: -2500 }, { label: 'ใส่คู่เดิมต่อ' }] },
+    { title: 'เกมใหม่วางขายวันนี้', text: 'ราคาเปิดตัว ฿1,690', choices: [{ label: 'ซื้อวันแรก', cash: -1690 }, { label: 'รอลดราคา' }] },
+    { title: 'เสื้อที่เห็นในติ๊กต็อก', text: 'ตัวละ ฿590 ส่งฟรี', choices: [{ label: 'ซื้อ', cash: -590 }, { label: 'ปิดแอปก่อน' }] },
+    { title: 'ชานมทุกวันหลังเลิกเรียน', text: 'เดือนนี้รวมแล้ว ฿900', choices: [{ label: 'ซื้อทุกวันเหมือนเดิม', cash: -900 }, { label: 'ชงเองที่บ้าน', cash: -200 }] },
+  ],
+  shock: [
+    { title: 'มือถือจอแตก', text: 'ค่าซ่อม ฿1,500', choices: [{ label: 'ซ่อมเลย', cash: -1500 }, { label: 'ใช้จอแตกไปก่อน' }] },
+    { title: 'ทำของเพื่อนพัง', text: 'ต้องชดใช้ ฿800', choices: [{ label: 'ชดใช้เต็ม', cash: -800 }, { label: 'จ่ายครึ่ง ขอเพื่อนช่วยครึ่ง', cash: -400 }] },
+  ],
+  chance: [
+    { title: 'งานพิเศษวันเสาร์', text: 'ได้ ฿1,200 แต่เหนื่อยทั้งวัน', choices: [{ label: 'รับงาน', cash: 1200 }, { label: 'พักดีกว่า' }] },
+    { title: 'ขายของที่ไม่ใช้แล้ว', text: 'ลงขายออนไลน์ได้ ฿600', choices: [{ label: 'ขาย', cash: 600 }, { label: 'เก็บไว้ก่อน' }] },
+    { title: 'สอนพิเศษน้องข้างบ้าน', text: 'ได้ ฿800', choices: [{ label: 'รับสอน', cash: 800 }, { label: 'ไม่ว่าง' }] },
+  ],
+  friend: [
+    { title: 'เพื่อนขอยืมเงิน', text: '฿500 บอกว่าจะคืนอีก 2 เดือน', choices: [{ label: 'ให้ยืม', cash: -500, due: { in: 2, amt: 500, label: 'เพื่อนคืนเงิน' } }, { label: 'ปฏิเสธดีๆ' }] },
+    { title: 'วันเกิดเพื่อนสนิท', text: 'หารค่าของขวัญคนละ ฿300', choices: [{ label: 'ร่วมหาร', cash: -300 }, { label: 'ทำการ์ดให้แทน' }] },
+    { title: 'แก๊งชวนไปทะเล', text: 'ทริป 2 วัน ฿2,000', choices: [{ label: 'ไป', cash: -2000 }, { label: 'ไม่ไปรอบนี้' }] },
+    { title: 'เพื่อนชวนเก็บเงินแบบชาเลนจ์', text: 'เก็บ ฿100 ทุกสัปดาห์ เดือนนี้ ฿400', choices: [{ label: 'เข้าร่วม', cash: -400, save: 400 }, { label: 'ไม่เอา' }] },
+  ],
+  grow: [
+    { title: 'คอร์สตัดต่อวิดีโอออนไลน์', text: '฿990 · จบคอร์สอาจได้งานตัดต่อ', choices: [{ label: 'ลงเรียน', cash: -990, due: { in: 2, amt: 1300, label: 'ได้งานตัดต่อ' } }, { label: 'ดูฟรีในยูทูบ' }] },
+    { title: 'หนังสือการเงินที่เพื่อนแนะนำ', text: '฿280', choices: [{ label: 'ซื้อ', cash: -280 }, { label: 'ยืมห้องสมุด' }] },
+    { title: 'ติวสอบ', text: 'คอร์สติว ฿1,500', choices: [{ label: 'ลงคอร์ส', cash: -1500 }, { label: 'ติวกลุ่มกับเพื่อนฟรี' }] },
+  ],
+  payday: [
+    { title: 'ได้ค่าช่วยงานบ้าน', text: '฿400', choices: [{ label: 'เก็บทั้งก้อน', save: 400 }, { label: 'ใช้', cash: 400 }] },
+    { title: 'ค่าขนมเดือนนี้ได้เพิ่ม', text: 'โบนัส ฿500', choices: [{ label: 'เก็บครึ่ง ใช้ครึ่ง', save: 250, cash: 250 }, { label: 'ใช้หมด', cash: 500 }] },
+    { title: 'ปู่ย่าให้เงิน', text: '฿1,000', choices: [{ label: 'เก็บทั้งก้อน', save: 1000 }, { label: 'ใช้', cash: 1000 }] },
+  ],
+};
+// A teen's year, school year first: month 1 is May. The marks are life, not lessons.
+const MONTHS = [null,
+  ['พ.ค.', 'เปิดเทอม'], ['มิ.ย.', ''], ['ก.ค.', 'สอบกลางภาค'], ['ส.ค.', 'วันแม่'],
+  ['ก.ย.', 'สอบปลายภาค'], ['ต.ค.', 'ปิดเทอม'], ['พ.ย.', 'ลอยกระทง'], ['ธ.ค.', 'ส่งท้ายปี'],
+  ['ม.ค.', 'วันเด็ก'], ['ก.พ.', 'วาเลนไทน์'], ['มี.ค.', 'ปิดเทอมใหญ่'], ['เม.ย.', 'สงกรานต์']];
+const SEASONS = [
+  { from: 1, to: 5, cls: 'rain', name: 'หน้าฝน' },
+  { from: 6, to: 9, cls: 'cool', name: 'หน้าหนาว' },
+  { from: 10, to: 12, cls: 'hot', name: 'หน้าร้อน' },
+];
+const PIPS = { 1: [4], 2: [1, 7], 3: [1, 4, 7], 4: [1, 2, 6, 7], 5: [1, 2, 4, 6, 7], 6: [1, 2, 3, 5, 6, 7] };
+// Pocket money left after the fixed monthly costs, paid to everyone at every month gate.
+const ALLOW = 400;
+// The base engine's rate (engine.js SAVINGS_RATE): 1% a month on เงินเก็บ, paid at the gate.
+const SAVINGS_RATE = 0.01;
+
+/* ---------- the year as geometry: 12 stretches of 6 tiles, a gate between each ---------- */
+const GAP = 68, STEP = 70;
+const MONTH_H = GAP * 2 + STEP * 5;
+const TOP_PAD = 300;      // gate 1 sits here, so month 1 frames like every other month
+const CAM = 170;          // where the current gate sits on screen: the whole month fits above the purse
+const FLAG_DY = 196, WIN_DY = 112;
+let W = 390;
+const gateY = (m) => TOP_PAD + (m - 1) * MONTH_H;
+// Every month is the same shape of road: a month is a month, for everybody.
+const tileXY = (m, k) => [W / 2 + Math.sin(k * 0.9) * W * 0.27, gateY(m) + GAP + (k - 1) * STEP];
+const flagX = (i) => W / 2 + (i ? 1 : -1) * W * 0.23;
+const forkMid = (i) => [flagX(i), gateY(13) + 34];
+// Every month offers the same six kinds of thing. The die only picks which one you meet.
+function monthOrder(m) {
+  const r = (m * 5) % 6;
+  const a = TYPES.slice(r).concat(TYPES.slice(0, r));
+  return m % 2 ? a : a.reverse();
+}
+function cardFor(m, i, k) {
+  const type = monthOrder(m)[k - 1];
+  const d = DECK[type];
+  // never hand the same person the same card twice while the deck still has one they have not met
+  const met = new Set(Object.values(players[i].hist).map((r) => r.title));
+  const base = (m + i * 2 + k) % d.length;
+  for (let s = 0; s < d.length; s++) {
+    const c = d[(base + s) % d.length];
+    if (!met.has(c.title)) return { type, card: c };
+  }
+  return { type, card: d[base] };
+}
+
+/* ---------- state ---------- */
+const START = () => [
+  { name: 'มีนา', mark: 'มี', goal: 'เก็บเงินซื้อกีตาร์', goalAmt: 6000, cash: 800, save: 500, pos: { m: 1, k: 0 }, hist: {}, due: [], inbox: {}, interest: 0 },
+  { name: 'วิน', mark: 'ว', goal: 'ไปคอนเสิร์ตด้วยเงินตัวเอง', goalAmt: 4500, cash: 800, save: 500, pos: { m: 1, k: 0 }, hist: {}, due: [], inbox: {}, interest: 0 },
+];
+let players = START();
+let month = 1, turn = 0, busy = false, phase = 'play', introOn = false;
+
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => Math.abs(n).toLocaleString('en-US');
+const baht = (n) => (n < 0 ? '−' : '') + '฿' + fmt(n);
+const total = (p) => p.cash + p.save;
+const pct = (v, g) => Math.max(0, Math.min(100, v / g * 100)) + '%';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// travel is instant under reduced motion; a result beat still holds long enough to read
+const wait = (ms) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
+const hold = (ms) => new Promise((r) => setTimeout(r, reduced ? Math.min(ms, 800) : ms));
+const icon = (f) => `<img src="icons/${f}" alt="">`;
+function restart(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+function say(t) { $('say').textContent = t; }
+
+// Spending a windfall is money out of the goal's reach, so it stamps coral like any other spend.
+function stampOf(ch, type) {
+  if (ch.save) return { kind: 'keep', text: 'เก็บ ฿' + fmt(ch.save) };
+  if (ch.cash < 0) return { kind: 'spend', text: 'จ่าย ฿' + fmt(ch.cash) };
+  if (ch.cash > 0) return type === 'payday' ? { kind: 'spend', text: 'ใช้ ฿' + fmt(ch.cash) } : { kind: 'keep', text: 'ได้ ฿' + fmt(ch.cash) };
+  return { kind: 'keep', text: 'ไม่จ่าย' };
+}
+function effText(ch, type) {
+  const parts = [];
+  if (ch.cash) parts.push(ch.cash > 0 && type === 'payday' ? 'ใช้ ฿' + fmt(ch.cash) : (ch.cash < 0 ? '−' : '+') + '฿' + fmt(ch.cash));
+  if (ch.save) parts.push('เก็บ +฿' + fmt(ch.save));
+  return parts.length ? parts.join(' · ') : 'ไม่เสียเงิน';
+}
+function gateSub(m) {
+  const [mon, mark] = MONTHS[m];
+  if (players.every((p) => p.hist[m] && p.hist[m].auto)) return mon + ' · เล่นอัตโนมัติ';
+  return mark ? mon + ' · ' + mark : mon;
+}
+function arriveMonth(m) {
+  players.forEach((p) => {
+    const allow = m <= 12 ? ALLOW : 0;
+    const int = m <= 12 ? Math.floor(p.save * SAVINGS_RATE) : 0;
+    const back = [];
+    p.due = p.due.filter((d) => (d.m <= m ? (back.push(d), false) : true));
+    p.cash += allow + back.reduce((s, d) => s + d.amt, 0);
+    p.save += int;
+    p.interest += int;
+    p.lastIn = { allow, int, back };
+    if (back.length) p.inbox[m] = back;
+    (p.snap = p.snap || {})[m] = p.cash + p.save;
+    p.pos = { m, k: 0 };
+  });
+}
+function play(i, k, type, card, ch, auto) {
+  const p = players[i];
+  p.hist[month] = { k, type, title: card.title, label: ch.label, cash: ch.cash || 0, save: ch.save || 0, veil: !!auto, auto: !!auto, ...stampOf(ch, type) };
+  if (ch.cash) p.cash += ch.cash;
+  if (ch.save) p.save += ch.save;
+  if (ch.due) p.due.push({ m: month + ch.due.in, amt: ch.due.amt, label: ch.due.label });
+}
+
+/* Months 1 and 2 are already lived, and มีนา has played month 3. */
+function replay() {
+  const H = [[1, 0, 4, 1], [1, 1, 2, 1], [2, 0, 5, 1], [2, 1, 6, 0], [3, 0, 3, 0]];
+  month = 1; arriveMonth(1);
+  for (const [m, i, k, ci] of H) {
+    while (month < m) { month += 1; arriveMonth(month); }
+    const { type, card } = cardFor(m, i, k);
+    play(i, k, type, card, card.choices[ci]);
+  }
+  turn = 1;
+}
+
+/* ---------- build ---------- */
+const scroll = $('scroll');
+const path = $('path');
+let ROAD = [], nodeEl = [], gateEl = [], lineEl = [], flagEl = [];
+const pawnEl = players.map((p, i) => {
+  const el = document.createElement('div');
+  el.className = 'pawn p' + i;
+  el.innerHTML = '<div class="face">' + p.mark + '</div>';
+  return el;
+});
+const rail = $('rail');
+rail.innerHTML = Array.from({ length: 12 }, () => '<i></i>').join('') + '<img src="icons/target.png" alt="">';
+const pts = (a) => a.map(([x, y]) => x.toFixed(1) + ',' + y.toFixed(1)).join(' ');
+
+function buildPath() {
+  W = scroll.clientWidth || 390;
+  path.innerHTML = '';
+  const yF = gateY(13);
+
+  SEASONS.forEach((s) => {
+    const b = document.createElement('div');
+    b.className = 'season ' + s.cls;
+    b.style.top = gateY(s.from) + 'px';
+    b.style.height = (gateY(s.to + 1) - gateY(s.from)) + 'px';
+    path.appendChild(b);
+    const l = document.createElement('div');
+    l.className = 'slabel';
+    // beside tile 2, which always swings to the right, so the left edge is free
+    l.style.top = (gateY(s.from) + GAP + STEP) + 'px';
+    l.textContent = s.name;
+    path.appendChild(l);
+  });
+
+  flagEl = players.map((p, i) => {
+    const g = document.createElement('div');
+    g.className = 'goal g' + i;
+    g.style.left = flagX(i) + 'px';
+    g.style.top = (yF + FLAG_DY) + 'px';
+    g.innerHTML = `<img class="gi" src="icons/target.png" alt=""><div class="gn">เป้าของ${p.name}</div>
+      <div class="gt">${p.goal}</div><div class="ga">เป้า ฿${fmt(p.goalAmt)}</div>
+      <div class="gres"><div class="gk">เงินสด + เงินเก็บ</div><div class="gtot">฿0</div><div class="gbar"><i></i></div>
+      <div class="verdict">ถึงเป้าแล้ว</div><div class="grefl"></div></div>`;
+    path.appendChild(g);
+    return g;
+  });
+  const win = document.createElement('div');
+  win.className = 'winner';
+  win.id = 'winner';
+  win.style.left = W / 2 + 'px';
+  win.style.top = (yF + WIN_DY) + 'px';
+  path.appendChild(win);
+
+  const startY = TOP_PAD - 150;
+  ROAD = [[W / 2, startY]];
+  for (let m = 1; m <= 12; m++) {
+    ROAD.push([W / 2, gateY(m)]);
+    for (let k = 1; k <= 6; k++) ROAD.push(tileXY(m, k));
+  }
+  ROAD.push([W / 2, yF]);
+  const fork = (i) => pts([[W / 2, yF], forkMid(i), [flagX(i), yF + FLAG_DY + 24]]);
+  path.insertAdjacentHTML('beforeend',
+    `<svg class="road" id="road" width="${W}" height="100" aria-hidden="true">
+      <polyline id="rf" fill="none" stroke="rgba(0,196,186,.16)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline id="f0" points="${fork(0)}" fill="none" stroke="rgba(0,196,186,.16)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline id="f1" points="${fork(1)}" fill="none" stroke="rgba(0,196,186,.16)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline id="rp" fill="none" stroke="rgba(0,196,186,.4)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="${pts(ROAD)}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>
+    </svg>`);
+
+  const start = document.createElement('div');
+  start.className = 'gate start';
+  start.style.left = W / 2 + 'px';
+  start.style.top = startY + 'px';
+  start.textContent = 'เริ่มปี';
+  path.appendChild(start);
+
+  gateEl = []; lineEl = []; nodeEl = [];
+  for (let m = 1; m <= 13; m++) {
+    const y = gateY(m);
+    const line = document.createElement('div');
+    line.className = 'gline';
+    line.style.top = y + 'px';
+    path.appendChild(line);
+    lineEl[m] = line;
+    const g = document.createElement('div');
+    g.className = 'gate' + (m === 13 ? ' fin' : '');
+    g.style.left = W / 2 + 'px';
+    g.style.top = y + 'px';
+    g.innerHTML = m === 13 ? icon('finish.png') + '<b>สิ้นปี</b>'
+      : icon('calendar.png') + `<span class="gtx"><b>เดือน ${m}</b><span class="gsub">${gateSub(m)}</span></span>`;
+    path.appendChild(g);
+    gateEl[m] = g;
+    if (m === 13) break;
+    nodeEl[m] = [];
+    monthOrder(m).forEach((t, idx) => {
+      const k = idx + 1;
+      const [x, ty] = tileXY(m, k);
+      const n = document.createElement('div');
+      n.className = 'node t-' + t;
+      n.style.left = x + 'px';
+      n.style.top = ty + 'px';
+      n.innerHTML = icon(TYPE[t].icon);
+      path.appendChild(n);
+      nodeEl[m][k] = n;
+    });
+  }
+  pawnEl.forEach((el) => path.appendChild(el));
+  sizePath();
+}
+function sizePath() {
+  const flagH = Math.max(...flagEl.map((g) => g.offsetHeight || 380));
+  const H = gateY(13) + FLAG_DY + flagH + 60;
+  path.style.height = H + 'px';
+  $('road').setAttribute('height', H);
+}
+
+/* ---------- marks: tags on the month you are in, stamps on every month you have lived ---------- */
+function renderMarks(fresh) {
+  path.querySelectorAll('.tag, .stamp').forEach((e) => e.remove());
+  for (let m = 1; m <= 12; m++) {
+    for (let k = 1; k <= 6; k++) {
+      const [x, y] = tileXY(m, k);
+      const toRight = x < W / 2;
+      const here = players.map((p, i) => ({ p, i, r: p.hist[m] })).filter((o) => o.r && o.r.k === k);
+      nodeEl[m][k].classList.toggle('idle-past', m < month && here.length === 0);
+      here.forEach((o, j) => {
+        const s = document.createElement('div');
+        s.className = 'stamp ' + o.r.kind + (toRight ? '' : ' left') + (o.r.veil ? ' later' : '') + (o.r.auto ? ' auto' : '');
+        s.dataset.m = m; s.dataset.i = o.i; s.dataset.y = y;
+        s.style.left = (toRight ? x + 42 : x - 42) + 'px';
+        s.style.top = (y + (here.length > 1 ? (j ? 17 : -17) : 0)) + 'px';
+        s.innerHTML = `<span class="mini p${o.i}">${o.p.mark}</span>${o.r.text}`;
+        path.appendChild(s);
+        if (fresh === m + '-' + o.i) s.classList.add('pop');
+      });
+      const open = phase === 'play' && m === month && here.length === 0 && players.some((p) => !p.hist[month]);
+      if (open) {
+        const t = document.createElement('div');
+        t.className = 'tag' + (toRight ? '' : ' left');
+        t.style.left = (toRight ? x + 42 : x - 42) + 'px';
+        t.style.top = y + 'px';
+        t.textContent = TYPE[monthOrder(m)[k - 1]].short;
+        path.appendChild(t);
+      }
+    }
+  }
+  paintGates(month);
+}
+function paintGates(cm) {
+  for (let m = 1; m <= 13; m++) {
+    gateEl[m].classList.toggle('past', m < cm);
+    gateEl[m].classList.toggle('now', m === cm);
+    lineEl[m].classList.toggle('now', m === cm);
+    if (m <= 12) gateEl[m].querySelector('.gsub').textContent = gateSub(m);
+  }
+  const cut = gateY(Math.min(cm, 13));
+  $('rp').setAttribute('points', pts(ROAD.filter((p) => p[1] <= cut)));
+  $('rf').setAttribute('points', pts(ROAD.filter((p) => p[1] >= cut)));
+  ['f0', 'f1'].forEach((id) => $(id).setAttribute('stroke', cm >= 13 && phase === 'end' ? 'rgba(0,196,186,.4)' : 'rgba(0,196,186,.16)'));
+}
+
+/* ---------- placement ---------- */
+function setXY(el, x, y, animate) {
+  if (!animate) el.style.transition = 'none';
+  el.style.transform = `translate(${x}px, ${y}px)`;
+  if (!animate) { void el.offsetWidth; el.style.transition = ''; }
+}
+// Between turns both pawns stand ON the month line, one each side of the gate: the same place in the year.
+function atGate(i, m) {
+  const half = (gateEl[m] ? gateEl[m].offsetWidth : 170) / 2;
+  return [i ? W / 2 + half + 6 : W / 2 - half - 6 - 34, gateY(m) - 17];
+}
+function pawnXY(i) {
+  const pos = players[i].pos;
+  if (pos.goal) return [flagX(i) - 17, gateY(13) + FLAG_DY - 22];
+  if (pos.fork) { const [x, y] = forkMid(i); return [x - 17, y - 17]; }
+  if (pos.k === 0) return atGate(i, pos.m);
+  const [x, y] = tileXY(pos.m, pos.k);
+  const shared = players.some((q, j) => j !== i && q.pos.m === pos.m && q.pos.k === pos.k && !q.pos.goal && !q.pos.fork);
+  return [x - 17 + (shared ? (i ? 19 : -19) : 0), y - 50];
+}
+function placePawn(i, animate) { const [x, y] = pawnXY(i); setXY(pawnEl[i], x, y, animate); }
+function hop(i) { restart(pawnEl[i], 'hop'); }
+
+let glideId = 0;
+function camGlide(to, ms) {
+  const id = ++glideId;
+  return new Promise((res) => {
+    to = Math.max(0, Math.min(to, scroll.scrollHeight - scroll.clientHeight));
+    if (reduced || !ms) { scroll.scrollTop = to; return res(); }
+    const from = scroll.scrollTop, t0 = performance.now();
+    const tick = (t) => {
+      if (id !== glideId) return res();
+      const k = Math.min(1, (t - t0) / ms);
+      const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      scroll.scrollTop = from + (to - from) * e;
+      if (k < 1) requestAnimationFrame(tick); else res();
+    };
+    requestAnimationFrame(tick);
+  });
+}
+// how far down the road band reaches before the purse glass starts
+function bandBottom() {
+  const purse = $('purse');
+  if (purse.hidden) return scroll.clientHeight - 24;
+  return purse.getBoundingClientRect().top - scroll.getBoundingClientRect().top;
+}
+function keepInView(y) {
+  if (y + 46 > scroll.scrollTop + bandBottom()) camGlide(y + 46 - bandBottom(), 220);
+}
+function endCam() {
+  const bottom = gateY(13) + FLAG_DY + Math.max(...flagEl.map((g) => g.offsetHeight));
+  return bottom + 14 - scroll.clientHeight;
+}
+
+/* ---------- turn + money ---------- */
+function paintRail(cm) {
+  rail.querySelectorAll('i').forEach((el, idx) => {
+    el.className = idx + 1 < cm ? 'past' : idx + 1 === cm ? 'now' : '';
+  });
+}
+function paintTurn() {
+  const p = players[turn];
+  $('av0').className = 'pawn avatar p' + turn;
+  $('av0').firstElementChild.textContent = p.mark;
+  $('av1').hidden = true;
+  $('pillName').textContent = 'ตาของ' + p.name;
+  $('pillMonth').textContent = 'เดือน ' + month + ' จาก 12';
+  paintRail(month);
+  paintPurse(p);
+  pawnEl.forEach((el, i) => el.classList.toggle('dim', i !== turn));
+}
+function paintBoth(label, sub) {
+  $('av0').className = 'pawn avatar p0';
+  $('av0').firstElementChild.textContent = players[0].mark;
+  $('av1').hidden = false;
+  $('av1').firstElementChild.textContent = players[1].mark;
+  $('pillName').textContent = label;
+  $('pillMonth').textContent = sub;
+  pawnEl.forEach((el) => el.classList.remove('dim'));
+}
+function paintPurse(p) {
+  $('delta').classList.remove('go');
+  $('purseGoal').textContent = p.goal;
+  $('purseGoalAmt').textContent = '฿' + fmt(p.goalAmt);
+  $('purseK').textContent = 'เงินสดของ' + p.name;
+  $('cash').textContent = baht(p.cash);
+  $('save').textContent = baht(p.save);
+  $('purseBar').style.width = pct(total(p), p.goalAmt);
+  const oi = players.findIndex((q) => q !== p), o = players[oi];
+  $('otherMark').className = 'mini p' + oi;
+  $('otherMark').textContent = o.mark;
+  $('otherName').textContent = o.name;
+  $('otherV').textContent = baht(total(o));
+}
+function countTo(el, from, to, ms) {
+  if (reduced || from === to || !ms) { el.textContent = baht(to); return; }
+  const t0 = performance.now();
+  const tick = (t) => {
+    const k = Math.min(1, (t - t0) / ms);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = baht(Math.round(from + (to - from) * e));
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+// the purse turns to both people when money moves for both at once
+function showDuo(lines, from, ms) {
+  const purse = $('purse');
+  $('delta').classList.remove('go');   // a delta belongs to one person's purse, never to the shared view
+  if ($('duo').hidden) purse.style.minHeight = purse.offsetHeight + 'px';
+  $('solo').hidden = true;
+  $('duo').hidden = false;
+  players.forEach((p, i) => {
+    $('duoK' + i).textContent = lines(p);
+    countTo($('duo' + i), from[i], total(p), ms);
+    $('duoBar' + i).style.width = pct(total(p), p.goalAmt);
+  });
+}
+function hideDuo() {
+  $('duo').hidden = true;
+  $('solo').hidden = false;
+  $('purse').style.minHeight = '';
+}
+function gateLines(p) {
+  const L = ['ค่าขนม +฿' + fmt(p.lastIn.allow)];
+  if (p.lastIn.int) L.push('ดอกเบี้ย +฿' + fmt(p.lastIn.int));
+  p.lastIn.back.forEach((d) => L.push(d.label + ' +฿' + fmt(d.amt)));
+  return L.join('\n');
+}
+
+/* ---------- die + controls ---------- */
+const die = $('die');
+function drawFace(n) {
+  die.innerHTML = (n ? PIPS[n] : [1, 2, 3, 5, 6, 7]).map((p) => '<b class="p' + p + '"></b>').join('');
+}
+function resetDie() { drawFace(0); die.className = 'die idle'; }
+let busyLabel = '';
+function setControls(label) {
+  if (label !== undefined) busyLabel = label;
+  const roll = $('roll');
+  roll.setAttribute('aria-busy', String(busy));
+  roll.setAttribute('aria-disabled', String(busy));
+  const mark = $('rollMark'), ic = $('rollIcon');
+  if (phase === 'end') {
+    mark.hidden = true; ic.hidden = busy;
+    $('rollLabel').textContent = busy ? busyLabel : 'ย้อนดูทั้งปี';
+  } else if (busy) {
+    mark.hidden = true; ic.hidden = true;
+    $('rollLabel').textContent = busyLabel;
+  } else {
+    // the name sits where the holder's thumb is: whose roll it is
+    const p = players[turn];
+    mark.hidden = false; ic.hidden = true;
+    mark.className = 'mini p' + turn;
+    mark.textContent = p.mark;
+    $('rollLabel').textContent = p.name + ' ทอยลูกเต๋า';
+  }
+  $('skip').hidden = phase !== 'play' || busy;
+  $('again').hidden = phase !== 'end' || busy;
+  $('dieBtn').hidden = phase === 'end';
+  $('dieBtn').setAttribute('aria-busy', String(busy));
+  paintBack();
+}
+function paintBack() {
+  $('back').hidden = !(phase === 'end' && !busy && flagEl.length && scroll.scrollTop < endCam() - 320);
+}
+
+/* ---------- a turn: roll, walk out to one tile of this month, land, THEN the card, then back to the gate ---------- */
+async function onRoll() {
+  if (phase === 'end') return lookBack();
+  if (busy) return;
+  endIntro();
+  const i = turn, p = players[i];
+  busy = true; setControls(p.name + ' กำลังเดิน…');
+  document.querySelectorAll('.land').forEach((e) => e.classList.remove('land'));
+  const gy = gateY(month) - scroll.scrollTop;
+  if (gy < 120 || gy > bandBottom() - 160) await camGlide(gateY(month) - CAM, 320);
+
+  die.className = 'die';
+  drawFace(6);
+  restart(die, 'roll');
+  const shuffle = setInterval(() => drawFace(1 + Math.floor(Math.random() * 6)), 90);
+  await wait(600);
+  clearInterval(shuffle);
+  const n = 1 + Math.floor(Math.random() * 6);
+  drawFace(n);
+  die.classList.remove('roll');
+  restart(die, 'landed');
+  say(p.name + ' ทอยได้ ' + n);
+  await wait(320);
+
+  for (let s = 1; s <= n; s++) {
+    p.pos = { m: month, k: s };
+    players.forEach((_, j) => placePawn(j, true));
+    hop(i);
+    restart(nodeEl[month][s], 'hit');
+    keepInView(tileXY(month, s)[1]);
+    await wait(230);
+  }
+  const { type, card } = cardFor(month, i, n);
+  const landed = nodeEl[month][n];
+  landed.classList.remove('hit');
+  restart(landed, 'land');
+  say(p.name + ' ถึงช่อง' + TYPE[type].short);
+  await wait(300);
+
+  setControls(p.name + ' กำลังเลือก');
+  const ci = await askCard(i, type, card);
+  const ch = card.choices[ci];
+  await closeSheet();
+
+  const before = { cash: p.cash, save: p.save };
+  play(i, n, type, card, ch);
+  countTo($('cash'), before.cash, p.cash, 650);
+  countTo($('save'), before.save, p.save, 650);
+  $('purseBar').style.width = pct(total(p), p.goalAmt);
+  const delta = $('delta');
+  if (ch.cash || ch.save) {
+    const neg = (ch.cash || 0) < 0 && !ch.save;
+    delta.className = 'delta ' + (neg ? 'minus' : 'plus');
+    delta.textContent = ch.save ? 'เก็บ +฿' + fmt(ch.save) : (ch.cash < 0 ? '−' : '+') + '฿' + fmt(ch.cash);
+    restart(delta, 'go');
+    setTimeout(() => delta.classList.remove('go'), 1200);
+  }
+  renderMarks(month + '-' + i);
+  say(p.name + ' เลือก ' + ch.label);
+  await hold(800);
+
+  // the visit is over: the stamp stays on the tile, the pawn goes back to the month line
+  p.pos = { m: month, k: 0 };
+  pawnEl[i].classList.add('back');
+  placePawn(i, true);
+  hop(i);
+  if (Math.abs(scroll.scrollTop - (gateY(month) - CAM)) > 8) camGlide(gateY(month) - CAM, 360);
+  await wait(380);
+  pawnEl[i].classList.remove('back');
+
+  turn += 1;
+  if (turn >= players.length) {
+    turn = 0;
+    await monthEnd();
+    if (phase === 'end') return;
+  }
+  paintTurn();
+  resetDie();
+  busy = false; setControls();
+  $('roll').focus({ preventScroll: true });
+}
+
+function askCard(i, type, card) {
+  return new Promise((resolve) => {
+    const sheet = $('sheet');
+    sheet.className = 'sheet glass t-' + type;
+    $('cardMark').className = 'mini p' + i;
+    $('cardMark').textContent = players[i].mark;
+    $('cardWho').textContent = 'การ์ดของ' + players[i].name;
+    $('chip').innerHTML = icon(TYPE[type].icon) + TYPE[type].label;
+    $('cardWhen').textContent = 'เดือน ' + month + ' · ' + MONTHS[month][0];
+    $('cardTitle').textContent = card.title;
+    $('cardText').textContent = card.text;
+    // the answer previews the stamp it will leave on the road
+    $('picks').innerHTML = card.choices.map((ch, idx) =>
+      `<button class="key pick" type="button" data-i="${idx}"><span>${ch.label}</span><small class="${stampOf(ch, type).kind}">${effText(ch, type)}</small></button>`).join('');
+    $('picks').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => resolve(+b.dataset.i), { once: true }));
+    requestAnimationFrame(() => {
+      sheet.classList.add('up');
+      $('scrim').classList.add('on');
+      sheet.setAttribute('aria-hidden', 'false');
+      setTimeout(() => $('picks').querySelector('button').focus({ preventScroll: true }), reduced ? 0 : 300);
+    });
+  });
+}
+async function closeSheet() {
+  const sheet = $('sheet');
+  sheet.classList.remove('up');
+  $('scrim').classList.remove('on');
+  sheet.setAttribute('aria-hidden', 'true');
+  await wait(250);
+}
+
+/* ---------- the month ends for everybody at once ---------- */
+async function monthEnd() {
+  const m = month;
+  const last = m === 12;
+  if (last) { hideDuo(); $('purse').hidden = true; }
+  paintBoth('ข้ามเดือนพร้อมกัน', '');
+  setControls('ข้ามเดือนพร้อมกัน');
+  path.querySelectorAll('.tag').forEach((e) => e.remove());
+  const steps = 7;
+  camGlide(last ? endCam() - 200 : gateY(m + 1) - CAM, steps * 260);
+  // both start from the same line, walk the same month side by side, reach the next line together
+  for (let s = 1; s <= steps; s++) {
+    players.forEach((p, i) => { p.pos = s < steps ? { m, k: s } : { m: m + 1, k: 0 }; hop(i); });
+    players.forEach((_, i) => placePawn(i, true));
+    await wait(260);
+  }
+  if (last) { await ending(); return; }
+
+  const before = players.map(total);
+  arriveMonth(m + 1);
+  month = m + 1;
+  renderMarks();
+  paintRail(month);
+  paintBoth('ได้ค่าขนมเท่ากัน', '');
+  players.forEach((p, i) => {
+    const [x, y] = atGate(i, month);
+    const c = document.createElement('div');
+    c.className = 'chipin';
+    c.textContent = '+฿' + fmt(p.lastIn.allow);
+    c.style.left = (x + 17) + 'px';
+    c.style.top = (y - 34) + 'px';
+    path.appendChild(c);
+    setTimeout(() => c.remove(), reduced ? 900 : 1600);
+  });
+  showDuo(gateLines, before, 650);
+  say('เดือน ' + month + ' ทุกคนได้ค่าขนม ฿' + fmt(ALLOW));
+  await hold(1400);
+  hideDuo();
+}
+
+/* ---------- the end of the road: everybody arrives, the only difference is the money ---------- */
+async function ending() {
+  phase = 'end';
+  month = 13;
+  arriveMonth(13);
+  renderMarks();
+  rail.querySelectorAll('i').forEach((el) => { el.className = 'past'; });
+  paintBoth('ผลปีนี้', 'ครบ 12 เดือน');
+  setControls('กำลังไปถึงเป้า');
+  fillResults();
+  await camGlide(endCam(), 520);
+  players.forEach((p, i) => { p.pos = { m: 13, k: 0, fork: true }; placePawn(i, true); hop(i); });
+  await wait(300);
+  players.forEach((p, i) => { p.pos = { goal: true }; placePawn(i, true); hop(i); });
+  await wait(420);
+
+  showResults(1100);
+  say(players.map((p) => p.name + ' มีเงินรวม ' + baht(total(p))).join(' · '));
+  busy = false; setControls();
+}
+
+function reflect(p) {
+  // the base engine's line is about choices: shocks and saving are not "หมดเงินกับ"
+  const by = {}, big = {};
+  Object.entries(p.hist).forEach(([m, r]) => {
+    if (r.cash >= 0 || r.save || r.type === 'shock') return;
+    by[r.type] = (by[r.type] || 0) - r.cash;
+    if (!big[r.type] || -r.cash > big[r.type].amt) big[r.type] = { m: +m, amt: -r.cash };
+  });
+  let t = null;
+  for (const k in by) if (!t || by[k] > by[t]) t = k;
+  return t ? { type: t, amt: by[t], m: big[t].m } : null;
+}
+function autoFrom() {
+  for (let m = 1; m <= 12; m++) if (players.some((p) => p.hist[m] && p.hist[m].auto)) return m;
+  return 0;
+}
+// Winner rule stays the partner's: most เงินสด + เงินเก็บ. The goal line is each person's own.
+function fillResults() {
+  const best = Math.max(...players.map(total));
+  players.forEach((p, i) => {
+    const g = flagEl[i];
+    const t = total(p);
+    const v = g.querySelector('.verdict');
+    if (t >= p.goalAmt) { v.className = 'verdict keep'; v.textContent = 'ถึงเป้าแล้ว'; }
+    else { v.className = 'verdict spend'; v.textContent = 'ขาดอีก ฿' + fmt(p.goalAmt - t); }
+    g.classList.add('ready');
+    const r = reflect(p);
+    g.querySelector('.grefl').innerHTML = r
+      ? `<div>เราหมดเงินกับ<b>${TYPE[r.type].spent}</b><span class="nw">มากสุด ฿${fmt(r.amt)}</span></div><button class="gjump" type="button" data-i="${i}" data-m="${r.m}">${icon('calendar.png')}ดูเดือน ${r.m}</button>`
+      : '<div>แทบไม่ได้ใช้เงินกับอะไรเลย</div>';
+  });
+  const top = players.map((p, i) => ({ p, i })).filter((o) => total(o.p) === best);
+  const auto = autoFrom();
+  $('winner').innerHTML = `<div class="wk"><img src="icons/trophy.svg" alt="">เงินรวมมากสุด</div>
+    <div class="wn">${top.map((o) => `<span class="mini p${o.i}">${o.p.mark}</span>${o.p.name}`).join(' ')} ฿${fmt(best)}</div>`
+    + (auto ? `<div class="wauto">เดือน ${auto} ถึง 12 เล่นอัตโนมัติ</div>` : '');
+  sizePath();
+}
+function showResults(ms) {
+  players.forEach((p, i) => {
+    const g = flagEl[i];
+    const t = total(p);
+    g.classList.add('done');
+    countTo(g.querySelector('.gtot'), ms ? 0 : t, t, ms);
+    const bar = () => { g.querySelector('.gbar i').style.width = pct(t, p.goalAmt); };
+    if (ms) requestAnimationFrame(bar); else bar();
+  });
+  $('winner').classList.add('on');
+}
+// the path is the evidence: go and look at the month on the road itself
+async function goToMonth(m, i) {
+  const r = players[i].hist[m];
+  if (!r) return;
+  const y = tileXY(m, r.k)[1];
+  await camGlide(y - 300, 800);
+  const s = path.querySelector(`.stamp[data-m="${m}"][data-i="${i}"]`);
+  if (s) restart(s, 'pop');
+  restart(nodeEl[m][r.k], 'land');
+  paintBack();
+}
+
+/* ---------- look back up the road ---------- */
+function buildYear() {
+  const best = Math.max(...players.map(total));
+  const who = (p, i) => `<div class="ywho"><div class="nm"><span class="mini p${i}">${p.mark}</span>${p.name}</div><div class="gt">${p.goal}</div></div>`;
+  const inb = (p, m) => (p.inbox[m] || []).map((d) => `<span class="yin">${d.label} <span class="nw">+฿${fmt(d.amt)}</span></span>`).join('');
+  let h = `<div class="yrow h"><div class="ycell">${who(players[0], 0)}</div><div></div><div class="ycell">${who(players[1], 1)}</div></div>`;
+  for (let m = 1; m <= 12; m++) {
+    const cell = (p, i) => {
+      const r = p.hist[m];
+      if (!r) return '<div class="ycell"></div>';
+      return `<button class="ycell" type="button" data-m="${m}" data-i="${i}"><span class="bead t-${r.type}">${icon(TYPE[r.type].icon)}</span><span class="ytx"><span class="yt">${r.title}</span><span class="ys ${r.kind}${r.auto ? ' auto' : ''}">${r.text}</span>${inb(p, m)}</span></button>`;
+    };
+    h += `<div class="yrow mo${m === 1 ? ' first' : ''}">${cell(players[0], 0)}<div class="ymid">${m}</div>${cell(players[1], 1)}</div>`;
+  }
+  const end = (p, i) => {
+    const t = total(p);
+    const hit = t >= p.goalAmt;
+    return `<div class="ycell"><span class="bead goalbead p${i}">${icon('target.png')}</span><div class="yend">
+      <div class="tot">${baht(t)}${t === best ? '<img src="icons/trophy.svg" alt="เงินรวมมากสุด">' : ''}</div>
+      <span class="verdict ${hit ? 'keep' : 'spend'}">${hit ? 'ถึงเป้าแล้ว' : 'ขาดอีก ฿' + fmt(p.goalAmt - t)}</span>
+      ${p.interest ? `<span class="yin">ดอกเบี้ยทั้งปี +฿${fmt(p.interest)}</span>` : ''}${inb(p, 13)}</div></div>`;
+  };
+  h += `<div class="yrow end">${end(players[0], 0)}<div class="ymid"></div>${end(players[1], 1)}</div>`;
+  $('ygrid').innerHTML = h;
+}
+function lookBack() {
+  if (busy) return;
+  buildYear();
+  const y = $('year');
+  y.classList.add('up');
+  y.setAttribute('aria-hidden', 'false');
+  $('scrim').classList.add('on');
+  setTimeout(() => $('yearClose').focus({ preventScroll: true }), reduced ? 0 : 300);
+}
+function closeYear(keepFocus) {
+  const y = $('year');
+  y.classList.remove('up');
+  y.setAttribute('aria-hidden', 'true');
+  $('scrim').classList.remove('on');
+  if (!keepFocus) $('roll').focus({ preventScroll: true });
+}
+
+/* ---------- skip to the end of the year ---------- */
+// A fixed rest-of-year, so the demo ending is the same every time whatever วิน picked live.
+const FF_DICE = [6, 2, 5, 1, 4, 2, 2, 5, 4, 5, 4, 3, 6, 3, 3, 1, 1, 5, 2, 1, 4, 2];
+const worth = (c) => (c.cash || 0) + (c.save || 0) + (c.due ? c.due.amt : 0);
+function careful(chs) {
+  let b = 0;
+  chs.forEach((c, j) => {
+    const d = worth(c) - worth(chs[b]);
+    if (d > 0 || (d === 0 && (c.save || 0) > (chs[b].save || 0))) b = j;
+  });
+  return b;
+}
+// มีนา plays it careful. วิน says yes to most things and is careful now and then.
+const policy = (i, m, chs) => (i === 0 ? careful(chs) : m % 3 === 0 ? careful(chs) : 0);
+
+async function skipYear() {
+  if (busy || phase !== 'play') return;
+  endIntro();
+  busy = true; setControls('กำลังข้ามไปสิ้นปี');
+  const from = month;
+  const startTotals = players.map(total);
+  let di = 0;
+  for (;;) {
+    for (let i = turn; i < players.length; i++) {
+      const k = FF_DICE[di++ % FF_DICE.length];
+      const { type, card } = cardFor(month, i, k);
+      play(i, k, type, card, card.choices[policy(i, month, card.choices)], true);
+    }
+    turn = 0;
+    if (month >= 12) break;
+    month += 1;
+    arriveMonth(month);
+  }
+  renderMarks();
+  paintGates(from);
+  // while the year goes by, the purse shows both people: the money is what pulls apart
+  showDuo(() => 'เงินสด + เงินเก็บ', startTotals, 0);
+  const shown = startTotals.slice();
+  const paintDuo = (vals, ms) => players.forEach((p, i) => {
+    countTo($('duo' + i), shown[i], vals[i], ms);
+    shown[i] = vals[i];
+    $('duoBar' + i).style.width = pct(vals[i], p.goalAmt);
+  });
+  paintBoth('เล่นอัตโนมัติ', 'เดือน ' + from);
+
+  // the year goes by: the camera runs down the road, both pawns ride each month line together
+  let cm = from;
+  const s0 = scroll.scrollTop, s1 = gateY(12) - CAM;
+  const lim = bandBottom() - 40;
+  // a stamp lands as the camera carries it into view
+  const reveal = (upToY) => path.querySelectorAll('.stamp.later').forEach((s) => {
+    if (+s.dataset.y > upToY) return;
+    s.classList.remove('later');
+    restart(s, 'pop');
+    players[+s.dataset.i].hist[+s.dataset.m].veil = false;
+  });
+  const showMonth = (m) => {
+    paintGates(m);
+    paintRail(m);
+    $('pillMonth').textContent = 'เดือน ' + m;
+    paintDuo(players.map((p) => p.snap[m]), 180);
+    players.forEach((_, i) => { const [x, y] = atGate(i, m); setXY(pawnEl[i], x, y, false); hop(i); });
+  };
+  // an auto-played month's gate label is wider: keep both pawns on its line
+  players.forEach((_, i) => { const [x, y] = atGate(i, from); setXY(pawnEl[i], x, y, true); });
+  await new Promise((res) => {
+    const dur = reduced ? 0 : 2000;
+    const t0 = performance.now();
+    glideId++;
+    const tick = (t) => {
+      const k = dur ? Math.min(1, (t - t0) / dur) : 1;
+      const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      scroll.scrollTop = s0 + (s1 - s0) * e;
+      // the pawns ride the lowest month line that still leaves them on screen above the purse
+      const at = Math.max(from, Math.min(12, Math.floor((scroll.scrollTop + lim - TOP_PAD) / MONTH_H) + 1));
+      if (at !== cm) { cm = at; showMonth(cm); }
+      reveal(Math.min(scroll.scrollTop + lim, gateY(12)));
+      if (k < 1) requestAnimationFrame(tick); else { if (cm !== 12) showMonth(12); res(); }
+    };
+    requestAnimationFrame(tick);
+  });
+  await wait(250);
+  // month 12, played: the last stamps land, then both walk out of the year together
+  reveal(Infinity);
+  paintDuo(players.map(total), 500);
+  await wait(550);
+  await monthEnd();
+}
+
+/* ---------- a new year, from the first month line ---------- */
+function newYear() {
+  if (busy) return;
+  closeYear(true);
+  players = START();
+  month = 1; turn = 0; phase = 'play';
+  arriveMonth(1);
+  $('purse').hidden = false;
+  hideDuo();
+  resetDie();
+  boot();
+  setControls();
+  $('roll').focus({ preventScroll: true });
+}
+
+/* ---------- the first look: the destination, then up the road to today ---------- */
+let introTimer = 0;
+function startIntro() {
+  if (reduced || phase !== 'play') return;
+  introOn = true;
+  scroll.scrollTop = gateY(13) - 150;
+  paintBoth('ปลายทางของทั้งคู่', '');
+  // hold on the destination once the page can actually be read, then fly up the road to today
+  const ready = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 1500))]);
+  ready.then(() => {
+    if (!introOn) return;
+    introTimer = setTimeout(async () => {
+      if (!introOn) return;
+      await camGlide(gateY(month) - CAM, 1500);
+      endIntro();
+    }, 1200);
+  });
+}
+function endIntro() {
+  if (!introOn) return;
+  introOn = false;
+  clearTimeout(introTimer);
+  glideId++;
+  if (phase === 'play' && !busy) paintTurn();
+}
+
+/* ---------- boot ---------- */
+function placeAll() {
+  players.forEach((_, i) => placePawn(i, false));
+}
+function boot() {
+  const keep = scroll.scrollTop;
+  buildPath();
+  renderMarks();
+  placeAll();
+  if (phase === 'play') {
+    if (introOn) scroll.scrollTop = keep;
+    else { paintTurn(); scroll.scrollTop = gateY(month) - CAM; }
+  } else {
+    paintBoth('ผลปีนี้', 'ครบ 12 เดือน');
+    fillResults(); showResults(0);
+    scroll.scrollTop = Math.max(0, endCam());
+  }
+}
+$('roll').addEventListener('click', onRoll);
+$('dieBtn').addEventListener('click', () => { if (phase === 'play') onRoll(); });
+$('skip').addEventListener('click', skipYear);
+$('again').addEventListener('click', newYear);
+$('back').addEventListener('click', () => camGlide(endCam(), 800).then(paintBack));
+$('yearClose').addEventListener('click', () => closeYear());
+$('scrim').addEventListener('click', () => { if ($('year').classList.contains('up')) closeYear(); });
+path.addEventListener('click', (e) => {
+  const b = e.target.closest('.gjump');
+  if (b) goToMonth(+b.dataset.m, +b.dataset.i);
+});
+$('ygrid').addEventListener('click', (e) => {
+  const b = e.target.closest('button.ycell');
+  if (!b) return;
+  closeYear(true);
+  goToMonth(+b.dataset.m, +b.dataset.i);
+});
+['pointerdown', 'wheel', 'touchstart'].forEach((ev) => scroll.addEventListener(ev, endIntro, { passive: true }));
+scroll.addEventListener('scroll', () => { if (phase === 'end') paintBack(); }, { passive: true });
+addEventListener('resize', () => { if (!busy) boot(); });
+
+replay();
+resetDie();
+boot();
+setControls();
+startIntro();
+document.fonts && document.fonts.ready.then(() => { if (!busy) boot(); });
+</script>
